@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="GENERAL" android:key="general">
+        <ListPreference android:entries="@array/deviceOptions" android:title="Device" android:key="device" android:defaultValue="phone" android:entryValues="@array/deviceValues" />
+        <ListPreference android:entries="@array/cameraOptions" android:title="Camera" android:key="camera" android:defaultValue="back" android:entryValues="@array/cameraValues" />
+    </PreferenceCategory>
+</PreferenceScreen>

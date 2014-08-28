@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="deviceOptions">
+        <item>Phone</item>
+        <item>Smart Glasses</item>
+    </string-array>
+    <string-array name="deviceValues">
+        <item>phone</item>
+        <item>glasses</item>
+    </string-array>
+    <string-array name="cameraOptions">
+        <item>Front</item>
+        <item>Back</item>
+    </string-array>
+    <string-array name="cameraValues">
+        <item>front</item>
+        <item>back</item>
+    </string-array>
+</resources>
