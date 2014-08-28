@@ -4,17 +4,14 @@
 
 package kcg.datarecorder.main;
 
+import java.util.List;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceScreen;
-import java.util.List;
-
-// Referenced classes of package kcg.datarecorder.main:
-//            Config
 
 public class Preferences extends PreferenceActivity
     implements android.content.SharedPreferences.OnSharedPreferenceChangeListener

@@ -3,6 +3,7 @@
 	<name>DataRecorder</name>
 	<comment></comment>
 	<projects>
+		<project>ImageUtils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

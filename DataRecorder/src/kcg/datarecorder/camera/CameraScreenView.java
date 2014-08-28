@@ -43,12 +43,13 @@ public class CameraScreenView extends View {
 					canvas.getHeight() / 2 - scaledBitmap.getHeight() / 2, paint);
 		}
 	}
-
-	protected void onMeasure(int width, int height) {
-		width = MeasureSpec.getSize(width);
-		height = MeasureSpec.getSize(height);
+	
+	
+	protected void onMeasure(int w, int h) {
+		width = MeasureSpec.getSize(w);
+		height = MeasureSpec.getSize(h);
 		setMeasuredDimension(width, height);
-		super.onMeasure(width, height);
+		super.onMeasure(w, h);
 	}
 
 	public void setFrame(byte[] frame) {
