@@ -74,11 +74,10 @@ public class Recorder implements RecorderDataUpdater {
 			MediaPlayer mPlayer = MediaPlayer.create(context, finishSoundResource);
 			mPlayer.start();
 			Thread.sleep(2000);
-			
+			mPlayer.release();
 		} catch (IOException | InterruptedException ioexception) {
 			Log.e("Recorder", ioexception.toString());
 		}
-
 		data.clear();
 	}
 }

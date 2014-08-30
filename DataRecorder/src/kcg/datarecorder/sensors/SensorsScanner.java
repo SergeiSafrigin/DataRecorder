@@ -44,9 +44,7 @@ public class SensorsScanner {
 		public void onSensorChanged(SensorEvent event) {
 			if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR){
 				SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
-				if (config.getDevice() == kcg.datarecorder.main.Config.Device.GLASSES){
-					SensorManager.remapCoordinateSystem(rotationMatrix, 2, 129, rotationMatrix);
-				}
+				SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, rotationMatrix);
 				SensorManager.getOrientation(rotationMatrix, angles);
 				listener.addOrientation(getYaw(), getPitch(), getRoll());
 			}
@@ -56,30 +54,50 @@ public class SensorsScanner {
 		}
 	};
 	
-	public float getPitch(){
-		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE){
-			return (180 / 3.14159265f) * angles[2];
-		} else {
-			return -((180 / 3.14159265f) * angles[2]);
+	public float getYaw(){
+		float ans = (angles[0] * (180 / 3.14159265f)) - 90;
+
+		if(ans<0){
+			ans+=360;
 		}
+		return ans;
+	}
+	
+	public float getPitch(){
+		float pitch = (angles[2] * (180 / 3.14159265f) + 270)%360;
+		if (pitch > 180)
+			return pitch - 360;;
+		return pitch;
 	}
 
 	public float getRoll(){
 		return angles[1] * (180 / 3.14159265f);
 	}
-
-	public float getYaw()
-	{
-		float angle;
-		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE)
-			angle = (90F + (180 / 3.14159265f) * angles[0]) % 360F;
-		else
-			angle= (180 / 3.14159265f) * angles[0] - 90F;
-		
-		if (angle < 0)
-			angle += 360;
-		return angle;
-	}
+	
+//	public float getPitch(){
+//		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE){
+//			return (180 / 3.14159265f) * angles[2];
+//		} else {
+//			return -((180 / 3.14159265f) * angles[2]);
+//		}
+//	}
+//
+//	public float getRoll(){
+//		return angles[1] * (180 / 3.14159265f);
+//	}
+//
+//	public float getYaw()
+//	{
+//		float angle;
+//		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE)
+//			angle = (90F + (180 / 3.14159265f) * angles[0]) % 360F;
+//		else
+//			angle= (180 / 3.14159265f) * angles[0] - 90F;
+//		
+//		if (angle < 0)
+//			angle += 360;
+//		return angle;
+//	}
 
 	public void onPause() {
 		if (sensorManager != null){
