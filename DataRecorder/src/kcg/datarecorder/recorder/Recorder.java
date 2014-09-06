@@ -1,5 +1,6 @@
 package kcg.datarecorder.recorder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +9,9 @@ import java.io.ObjectOutputStream;
 import kcg.datarecorder.location.Point3d;
 import kcg.datarecorder.main.Config;
 import android.content.Context;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
@@ -31,7 +35,14 @@ public class Recorder implements RecorderDataUpdater {
 	public void addData(long time, byte[] frame, Point3d location, float yaw,
 			float pitch, float roll, float pressure) {
 		
-		data.addFrame(new FrameData(time, frame, location, yaw, pitch, roll, pressure));
+		int width = data.getConfig().getPreviewWidth();
+		int height = data.getConfig().getPreviewHeight();
+		YuvImage yuvImage= new YuvImage(frame, ImageFormat.NV21, width, height, null);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		yuvImage.compressToJpeg(new Rect(0, 0, width, height),80, baos);
+		byte jpegFrame[] = baos.toByteArray();
+		
+		data.addFrame(new FrameData(time, jpegFrame, location, yaw, pitch, roll, pressure));
 	}
 
 	public void start() {

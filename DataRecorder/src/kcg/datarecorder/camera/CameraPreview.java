@@ -1,15 +1,20 @@
 package kcg.datarecorder.camera;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import kcg.datarecorder.main.Config;
 import android.content.Context;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.io.IOException;
-import java.util.List;
-import kcg.datarecorder.main.Config;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback, PreviewCallback {
 
@@ -108,9 +113,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		return best;
 	}
 	
-	public void onPreviewFrame(byte abyte0[], Camera camera1) {
-		long l = System.currentTimeMillis();
-		listener.addFrame(abyte0, l);
+	public void onPreviewFrame(byte frame[], Camera camera) {
+		long time = System.currentTimeMillis();
+		listener.addFrame(frame, time);
 	}
 	
 	protected void onMeasure(int width, int height) {
