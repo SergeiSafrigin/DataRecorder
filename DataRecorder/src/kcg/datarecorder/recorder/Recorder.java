@@ -54,7 +54,7 @@ public class Recorder implements RecorderDataUpdater {
 			return;
 		}
 
-		File mediaStorageDir = new File(Environment.getExternalStorageDirectory()+File.separator+"Data Recorder");
+		File mediaStorageDir = new File(Environment.getExternalStorageDirectory()+File.separator+"DataRecorder");
 		
 		if(!mediaStorageDir.exists() && !mediaStorageDir.isDirectory()) {
 	        // create empty directory
