@@ -18,9 +18,10 @@ public class Config implements Serializable {
 	private int previewHeight = 320;
 	private int previewWidth = 240;
 	private double vAngle;
+	private boolean continueosScaning;
 	
 	public static List<Size> SCREEN_SIZES;
-
+	
 	public Camera getCamera() {
 		return camera;
 	}
@@ -75,5 +76,13 @@ public class Config implements Serializable {
 
 	public void setvAngle(double vAngle) {
 		this.vAngle = vAngle;
-	}	
+	}
+
+	public boolean isContinueosScaning() {
+		return continueosScaning;
+	}
+
+	public void setContinueosScaning(boolean continueosScaning) {
+		this.continueosScaning = continueosScaning;
+	}
 }

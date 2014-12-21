@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import kcg.datarecorder.location.Point3d;
 import kcg.datarecorder.main.Config;
@@ -32,7 +33,7 @@ public class Recorder implements RecorderDataUpdater {
 		data = new Data(config);
 	}
 
-	public void addData(long time, byte[] frame, Point3d location, float yaw,
+	public void addData(long time, byte[] frame, Point3d location, ArrayList<WifiData> wifiDataList, float yaw,
 			float pitch, float roll, float pressure) {
 		
 		int width = data.getConfig().getPreviewWidth();
@@ -42,7 +43,7 @@ public class Recorder implements RecorderDataUpdater {
 		yuvImage.compressToJpeg(new Rect(0, 0, width, height),80, baos);
 		byte jpegFrame[] = baos.toByteArray();
 		
-		data.addFrame(new FrameData(time, jpegFrame, location, yaw, pitch, roll, pressure));
+		data.addFrame(new FrameData(time, jpegFrame, location, wifiDataList, yaw, pitch, roll, pressure));
 	}
 
 	public void start() {

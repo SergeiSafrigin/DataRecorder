@@ -4,6 +4,7 @@ import kcg.datarecorder.camera.CameraController;
 import kcg.datarecorder.location.LocationController;
 import kcg.datarecorder.recorder.RecorderController;
 import kcg.datarecorder.sensors.SensorsController;
+import kcg.datarecorder.sensors.WifiScanner;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
 	private RecorderController recorderController;
 	private boolean running;
 	private SensorsController sensorsController;
+	private WifiScanner wifiScanner;
 	private Button startButton;
 	private Button stopButton;
 
@@ -50,7 +52,8 @@ public class MainActivity extends Activity {
 		cameraController = new CameraController(context, config);
 		sensorsController = new SensorsController(context, config);
 		locationController = new LocationController(context, config);
-		recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController);
+		wifiScanner = new WifiScanner(context, config);
+		recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController, wifiScanner);
 		startButton = (Button)(this.findViewById(R.id.startButton));
 		stopButton = (Button)(this.findViewById(R.id.stopButton));
 
@@ -76,7 +79,8 @@ public class MainActivity extends Activity {
 		String device = sharedPreferences.getString("device", "phone");
 		String camera = sharedPreferences.getString("camera", "back");
 		String[] size = sharedPreferences.getString("screenSize", "320 x 240").split(" x ");
-
+		boolean continueosScaning = sharedPreferences.getBoolean("continueosScaning", false);
+		
 		config.setPreviewWidth(Integer.parseInt(size[0]));
 		config.setPreviewHeight(Integer.parseInt(size[1]));
 
@@ -100,6 +104,8 @@ public class MainActivity extends Activity {
 			config.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
 			config.setCamera(Config.Camera.FRONT);
 		}
+		
+		config.setContinueosScaning(continueosScaning);
 	}
 
 	@Override

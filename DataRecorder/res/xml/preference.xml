@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="GENERAL" android:key="general">
-        <ListPreference android:entries="@array/deviceOptions" android:title="Device" android:key="device" android:defaultValue="phone" android:entryValues="@array/deviceValues" />
-        <ListPreference android:entries="@array/cameraOptions" android:title="Camera" android:key="camera" android:defaultValue="back" android:entryValues="@array/cameraValues" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="general"
+        android:title="GENERAL" >
+        <ListPreference
+            android:defaultValue="phone"
+            android:entries="@array/deviceOptions"
+            android:entryValues="@array/deviceValues"
+            android:key="device"
+            android:title="Device" />
+        <ListPreference
+            android:defaultValue="back"
+            android:entries="@array/cameraOptions"
+            android:entryValues="@array/cameraValues"
+            android:key="camera"
+            android:title="Camera" />
+
+        <CheckBoxPreference
+            android:enabled="true"
+            android:key="continueosScaning"
+            android:persistent="true"
+            android:selectable="true"
+            android:title="Continueos WIFI Scaning" >
+        </CheckBoxPreference>
     </PreferenceCategory>
+
 </PreferenceScreen>

@@ -1,27 +1,33 @@
 package kcg.datarecorder.recorder;
 
 import android.content.Context;
+import android.net.wifi.WifiConfiguration;
 import kcg.datarecorder.camera.CameraController;
 import kcg.datarecorder.location.LocationController;
 import kcg.datarecorder.main.Config;
 import kcg.datarecorder.sensors.SensorsController;
+import kcg.datarecorder.sensors.WifiScanner;
 
 public class RecorderController implements OnFrameTrigger {
 	private CameraController cameraController;
 	private LocationController locationController;
+	private WifiScanner wifiScanner;
 	private Recorder recorder;
 	private boolean recording;
 	private SensorsController sensorsController;
 
 	public RecorderController(Context context, Config config, int finishSoundResource,
-			CameraController cameracontroller,
-			SensorsController sensorscontroller,
-			LocationController locationcontroller) {
+			CameraController cameraController,
+			SensorsController sensorsController,
+			LocationController locationController,
+			WifiScanner wifiScanner) {
 		
-		cameraController = cameracontroller;
-		sensorsController = sensorscontroller;
-		locationController = locationcontroller;
-		cameracontroller.registerOnFrameListener(this);
+		this.cameraController = cameraController;
+		this.sensorsController = sensorsController;
+		this.locationController = locationController;
+		this.wifiScanner = wifiScanner;
+		
+		cameraController.registerOnFrameListener(this);
 		recorder = new Recorder(context, config, finishSoundResource);
 	}
 
@@ -30,6 +36,7 @@ public class RecorderController implements OnFrameTrigger {
 			recorder.addData(cameraController.getLastFrameTime(),
 					cameraController.getLastFrame(),
 					locationController.getLastLocation(),
+					wifiScanner.getWifiDataList(),
 					sensorsController.getYaw(),
 					sensorsController.getPitch(),
 					sensorsController.getRoll(),
@@ -47,6 +54,7 @@ public class RecorderController implements OnFrameTrigger {
 			cameraController.registerOnFrameListener(this);
 			sensorsController.startSensorScanner();
 			locationController.startGPS();
+			wifiScanner.startWifiLestener();
 			recorder.start();
 		}
 	}
@@ -57,6 +65,7 @@ public class RecorderController implements OnFrameTrigger {
 			cameraController.unregisterOnFrameListener();
 			sensorsController.stopSensorScanner();
 			locationController.stopGPS();
+			wifiScanner.stopWifiListener();
 			recorder.stop();
 		}
 	}
