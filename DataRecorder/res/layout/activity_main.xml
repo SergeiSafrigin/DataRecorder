@@ -4,6 +4,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
+    <FrameLayout
+	    android:id="@+id/camera_preview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    />
+    
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -20,6 +26,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/stop" />
+
+        <TextView
+            android:id="@+id/basicInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="info"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -8,12 +8,12 @@ import android.hardware.Camera.Size;
 public class Config implements Serializable {
 	private static final long serialVersionUID = 0xa8b2fce2b82d3db1L;
 
-	public static enum Camera {FRONT, BACK};
-	public static enum Device {GLASSES, PHONE}
+	public static enum CameraType {FRONT, BACK};
+	public static enum DeviceType {GLASSES, PHONE}
 
-	private Camera camera;
+	private CameraType mCameraType;
 	private int cameraId;
-	private Device device;
+	private DeviceType device;
 	private double hAngle;
 	private int previewHeight = 320;
 	private int previewWidth = 240;
@@ -21,12 +21,12 @@ public class Config implements Serializable {
 	
 	public static List<Size> SCREEN_SIZES;
 
-	public Camera getCamera() {
-		return camera;
+	public CameraType getCameraType() {
+		return mCameraType;
 	}
 
-	public void setCamera(Camera camera) {
-		this.camera = camera;
+	public void setCameraType(CameraType cameraType) {
+		mCameraType = cameraType;
 	}
 
 	public int getCameraId() {
@@ -37,11 +37,11 @@ public class Config implements Serializable {
 		this.cameraId = cameraId;
 	}
 
-	public Device getDevice() {
+	public DeviceType getDevice() {
 		return device;
 	}
 
-	public void setDevice(Device device) {
+	public void setDevice(DeviceType device) {
 		this.device = device;
 	}
 

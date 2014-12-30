@@ -1,6 +1,7 @@
 package kcg.datarecorder.main;
 
 import kcg.datarecorder.camera.CameraController;
+import kcg.datarecorder.camera.NewCameraController;
 import kcg.datarecorder.location.LocationController;
 import kcg.datarecorder.recorder.RecorderController;
 import kcg.datarecorder.sensors.SensorsController;
@@ -17,11 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
-	private CameraController cameraController;
+	//private CameraController cameraController;
+	private NewCameraController mNewCameraController;
 	private Config config;
 	private LocationController locationController;
 	private RelativeLayout mainLayout;
@@ -30,6 +34,7 @@ public class MainActivity extends Activity {
 	private SensorsController sensorsController;
 	private Button startButton;
 	private Button stopButton;
+	private TextView mBasicInfo;
 
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -39,25 +44,39 @@ public class MainActivity extends Activity {
 
 		init(this);
 
-		mainLayout = (RelativeLayout)(this.findViewById(R.id.mainLayout));
-		mainLayout.addView(this.cameraController.getCameraPreview());
-		mainLayout.addView(this.cameraController.getCameraView(), 0);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mNewCameraController.getCameraPreview());
+        mBasicInfo = (TextView)(this.findViewById(R.id.basicInfo));
+        
+		//mainLayout = (RelativeLayout)(this.findViewById(R.id.mainLayout));
+		//mainLayout.addView(mNewCameraController.getCameraPreview());		
+		//mainLayout.addView(this.cameraController.getCameraPreview());
+		//mainLayout.addView(this.cameraController.getCameraView(), 0);
 	}
 
 	private void init(Context context) {
 		this.config = new Config();
 		updatePreferences();
-		cameraController = new CameraController(context, config);
+		
+		mNewCameraController = new NewCameraController(context, config);
+		
+		//cameraController = new CameraController(context, config);
 		sensorsController = new SensorsController(context, config);
 		locationController = new LocationController(context, config);
-		recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController);
+		//recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController);
+		recorderController = new RecorderController(context, config, R.raw.recorded, mNewCameraController, sensorsController, locationController);
 		startButton = (Button)(this.findViewById(R.id.startButton));
 		stopButton = (Button)(this.findViewById(R.id.stopButton));
+		
+		stopButton.setEnabled(false);
 
 		startButton.setOnClickListener(new View.OnClickListener(){
 
 			public void onClick(View view) {
-				recorderController.startRecording();
+				stopButton.setEnabled(true);
+				startButton.setEnabled(false);
+				
+				//recorderController.startRecording();
 				running = true;
 			}
 		});
@@ -65,7 +84,10 @@ public class MainActivity extends Activity {
 		this.stopButton.setOnClickListener(new View.OnClickListener(){
 
 			public void onClick(View view) {
-				recorderController.stopRecording();
+				stopButton.setEnabled(false);
+				startButton.setEnabled(true);
+
+				//recorderController.stopRecording();
 				running = false;
 			}
 		});
@@ -82,23 +104,23 @@ public class MainActivity extends Activity {
 
 		switch (device) {
 		case "phone":
-			config.setDevice(Config.Device.PHONE);
+			config.setDevice(Config.DeviceType.PHONE);
 			break;
 
 		case "glasses":
-			config.setDevice(Config.Device.GLASSES);
+			config.setDevice(Config.DeviceType.GLASSES);
 			break;
 		}
 
 		switch (camera) {
 		case "back":
 			config.setCameraId(Camera.CameraInfo.CAMERA_FACING_BACK);
-			config.setCamera(Config.Camera.BACK);
+			config.setCameraType(Config.CameraType.BACK);
 			break;
 
 		case "front": 
 			config.setCameraId(Camera.CameraInfo.CAMERA_FACING_FRONT);
-			config.setCamera(Config.Camera.FRONT);
+			config.setCameraType(Config.CameraType.FRONT);
 		}
 	}
 
@@ -130,7 +152,7 @@ public class MainActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		this.updatePreferences();
-		this.recorderController.onResume();
+		//this.recorderController.onResume();
 	}
 
 }
