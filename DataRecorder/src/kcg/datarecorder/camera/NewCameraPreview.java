@@ -163,4 +163,8 @@ public class NewCameraPreview extends SurfaceView  implements SurfaceHolder.Call
 		miLastFPS = 0;
 		miFrameCounter = 0;
 	}
+
+	public int getFPS() {
+		return miLastFPS;
+	}
 }

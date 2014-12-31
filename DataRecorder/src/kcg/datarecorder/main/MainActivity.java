@@ -1,5 +1,8 @@
 package kcg.datarecorder.main;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import kcg.datarecorder.camera.CameraController;
 import kcg.datarecorder.camera.NewCameraController;
 import kcg.datarecorder.location.LocationController;
@@ -9,9 +12,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +29,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
+	private final int TIME_1_SECOND = 1000;//1000 millis
+	
 	//private CameraController cameraController;
 	private NewCameraController mNewCameraController;
 	private Config config;
@@ -34,7 +41,9 @@ public class MainActivity extends Activity {
 	private SensorsController sensorsController;
 	private Button startButton;
 	private Button stopButton;
-	private TextView mBasicInfo;
+	private TextView mInfo;
+	private Handler mTimerHandler;
+	private Timer mTimer;
 
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -46,8 +55,8 @@ public class MainActivity extends Activity {
 
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mNewCameraController.getCameraPreview());
-        mBasicInfo = (TextView)(this.findViewById(R.id.basicInfo));
-        
+        mInfo = (TextView)(this.findViewById(R.id.basicInfo));
+        mInfo.setTextColor(Color.RED);
 		//mainLayout = (RelativeLayout)(this.findViewById(R.id.mainLayout));
 		//mainLayout.addView(mNewCameraController.getCameraPreview());		
 		//mainLayout.addView(this.cameraController.getCameraPreview());
@@ -58,6 +67,8 @@ public class MainActivity extends Activity {
 		this.config = new Config();
 		updatePreferences();
 		
+    	mTimerHandler = new Handler();
+
 		mNewCameraController = new NewCameraController(context, config);		
 		//cameraController = new CameraController(context, config);
 		
@@ -78,8 +89,8 @@ public class MainActivity extends Activity {
 				stopButton.setEnabled(true);
 				startButton.setEnabled(false);
 
-				//mTimer = new Timer();		
-				//mTimer.scheduleAtFixedRate(new LearningSchedulerTimerExpiresTask(), TIME_1_SECOND, TIME_1_SECOND);
+				mTimer = new Timer();		
+				mTimer.scheduleAtFixedRate(new timerExpiredTask(), TIME_1_SECOND, TIME_1_SECOND);
 
 				recorderController.startRecording();
 				running = true;
@@ -92,7 +103,11 @@ public class MainActivity extends Activity {
 				stopButton.setEnabled(false);
 				startButton.setEnabled(true);
 
-				recorderController.stopRecording();
+				mTimer.cancel();
+				mTimer.purge();
+
+				recorderController.stopRecording();				
+				
 				running = false;
 			}
 		});
@@ -161,6 +176,18 @@ public class MainActivity extends Activity {
 		
 		updatePreferences();
 		recorderController.onResume();
+	}
+
+	class timerExpiredTask extends TimerTask {
+        public void run() {
+        	mTimerHandler.post(new Runnable() {
+        		public void run() {
+        			int frames = mNewCameraController.getFrameCounter();
+        			int fps = mNewCameraController.getFPS();
+        			mInfo.setText("FPS=" + fps + " [" + frames + "]");
+        		}
+        	});
+        }
 	}
 
 }

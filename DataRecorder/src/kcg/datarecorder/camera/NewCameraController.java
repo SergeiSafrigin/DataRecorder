@@ -68,5 +68,9 @@ public class NewCameraController implements CameraFrameTrigger {
 		return mPreview.getFrameCounter();
 	}
 
+	public int getFPS() {
+		return mPreview.getFPS();
+	}
+
 
 }
