@@ -14,19 +14,26 @@ import android.view.SurfaceView;
 
 public class NewCameraPreview extends SurfaceView  implements SurfaceHolder.Callback, PreviewCallback {
 
+	private Object mLock;
 	private Context mContext;
 	
 	private Camera mCamera;	
 	private SurfaceHolder mHolder;
+	private CameraFrameTrigger mFrameTrigger;
 	
 	private int miFrameCounter = 0;
-	private long mlPrevTimeMillis = 0;
+	private long mlPrevFPSTimeMillis = 0;
+	private long mlLastFrameTime = 0;
+	private byte maLastFrame[];
+	private int miLastFPS = 0;
 	
-	public NewCameraPreview(Context context, Camera camera) {
+	public NewCameraPreview(Context context, Camera camera, CameraFrameTrigger frameTrigger) {
 		super(context);
 	
+		mLock = new Object();
 		mContext = context;
 		mCamera = camera;
+		mFrameTrigger = frameTrigger;
 		
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -110,19 +117,50 @@ public class NewCameraPreview extends SurfaceView  implements SurfaceHolder.Call
 	}
 
 	@Override
-	public void onPreviewFrame(byte[] data, Camera camera) {
-		if(mlPrevTimeMillis == 0) {
-			mlPrevTimeMillis = System.currentTimeMillis();
+	public void onPreviewFrame(byte[] frame, Camera camera) {
+
+		long curTime = System.currentTimeMillis();
+		synchronized (mLock) {
+			mlLastFrameTime = curTime;
+			maLastFrame = frame;
+		}
+		
+		//handle first frame
+		if(mlPrevFPSTimeMillis == 0) {
+			mlPrevFPSTimeMillis = curTime;
 			return;
 		}
 		
 		miFrameCounter++;
 		if((miFrameCounter % 100) == 0) {
-			long curTime = System.currentTimeMillis();
+			miLastFPS = (int)(100/((curTime - mlPrevFPSTimeMillis) / 1000.0));
+			mlPrevFPSTimeMillis = curTime;
 			
-			Log.d("CAMPREV", "Info: frameCounter=" + miFrameCounter + ", time=" + curTime + " FPS=" + (int)(100/((curTime - mlPrevTimeMillis) / 1000.0)));
-			mlPrevTimeMillis = curTime;
+			Log.d("CAMPREV", "FPS=" + miLastFPS + "frameCounter=" + miFrameCounter);
+		}
+		
+		mFrameTrigger.newFrameTrigger();
+	}
+
+	//TODO: YG: not good enough - need to synchronized BOTH actions!!!
+	public byte[] getLastFrame() {
+		synchronized (mLock) {
+			return maLastFrame;
 		}
 	}
 
+	//YG: not good enough - need to synchronized BOTH actions!!!
+	public long getLastFrameTime() {
+		return mlLastFrameTime;
+	}
+
+	public int getFrameCounter() {
+		return miFrameCounter;
+	}
+	
+	public void reset() {
+		mlPrevFPSTimeMillis = 0;
+		miLastFPS = 0;
+		miFrameCounter = 0;
+	}
 }

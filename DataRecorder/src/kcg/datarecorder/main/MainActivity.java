@@ -58,13 +58,15 @@ public class MainActivity extends Activity {
 		this.config = new Config();
 		updatePreferences();
 		
-		mNewCameraController = new NewCameraController(context, config);
-		
+		mNewCameraController = new NewCameraController(context, config);		
 		//cameraController = new CameraController(context, config);
+		
 		sensorsController = new SensorsController(context, config);
 		locationController = new LocationController(context, config);
+		
 		//recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController);
 		recorderController = new RecorderController(context, config, R.raw.recorded, mNewCameraController, sensorsController, locationController);
+		
 		startButton = (Button)(this.findViewById(R.id.startButton));
 		stopButton = (Button)(this.findViewById(R.id.stopButton));
 		
@@ -75,8 +77,11 @@ public class MainActivity extends Activity {
 			public void onClick(View view) {
 				stopButton.setEnabled(true);
 				startButton.setEnabled(false);
-				
-				//recorderController.startRecording();
+
+				//mTimer = new Timer();		
+				//mTimer.scheduleAtFixedRate(new LearningSchedulerTimerExpiresTask(), TIME_1_SECOND, TIME_1_SECOND);
+
+				recorderController.startRecording();
 				running = true;
 			}
 		});
@@ -87,7 +92,7 @@ public class MainActivity extends Activity {
 				stopButton.setEnabled(false);
 				startButton.setEnabled(true);
 
-				//recorderController.stopRecording();
+				recorderController.stopRecording();
 				running = false;
 			}
 		});
@@ -144,15 +149,18 @@ public class MainActivity extends Activity {
 
 	public void onPause() {
 		super.onPause();
-		if (!(this.running)) return;
-		this.recorderController.stopRecording();
-		this.running = false;
+		
+		if (!running) 
+			return;
+		recorderController.stopRecording();
+		running = false;
 	}
 
 	public void onResume() {
 		super.onResume();
-		this.updatePreferences();
-		//this.recorderController.onResume();
+		
+		updatePreferences();
+		recorderController.onResume();
 	}
 
 }
