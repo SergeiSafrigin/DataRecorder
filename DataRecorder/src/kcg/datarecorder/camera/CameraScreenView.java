@@ -55,7 +55,7 @@ public class CameraScreenView extends View {
 	public void setFrame(byte[] frame) {
 		boolean flip = false;
 		int rotation;
-		if (config.getCamera() == Config.Camera.BACK) {
+		if (config.getCameraType() == Config.CameraType.BACK) {
 			rotation = 90;
 		} else {
 			rotation = -90;

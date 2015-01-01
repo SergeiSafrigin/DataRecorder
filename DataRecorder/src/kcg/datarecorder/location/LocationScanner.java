@@ -29,7 +29,7 @@ public class LocationScanner {
 			Toast.makeText(context, "Please Enable GPS", Toast.LENGTH_SHORT).show();
 		}
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MINIMUM_TIME_BETWEEN_UPDATES, MINIMUM_DISTANCE_CHANGE_FOR_UPDATES, locationListener);
-		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE) {
+		if (config.getDevice() == Config.DeviceType.PHONE) {
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1,1, locationListener);
 		}
 	}

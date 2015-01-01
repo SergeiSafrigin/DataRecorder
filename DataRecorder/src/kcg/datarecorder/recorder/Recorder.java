@@ -26,6 +26,7 @@ public class Recorder implements RecorderDataUpdater {
 	private Context context;
 	private Data data;
 	private int finishSoundResource;
+	private int miTotalFrames;
 
 	public Recorder(Context context1, Config config, int finishSoundResource) {
 		context = context1;
@@ -50,11 +51,12 @@ public class Recorder implements RecorderDataUpdater {
 		data.setStartTime(System.currentTimeMillis());
 	}
 
-	public void stop() {
+	public void stop(int totalFrames) {
 		if (data.size() <= 0) {
 			return;
 		}
 
+		miTotalFrames = totalFrames;
 		File mediaStorageDir = new File(Environment.getExternalStorageDirectory()+File.separator+"DataRecorder");
 		
 		if(!mediaStorageDir.exists() && !mediaStorageDir.isDirectory()) {
@@ -66,7 +68,7 @@ public class Recorder implements RecorderDataUpdater {
 	        }
 	    }
 		
-		File file = new File(mediaStorageDir.getPath() + File.separator + data.getStartTime());
+		File file = new File(mediaStorageDir.getPath() + File.separator + data.getStartTime() + "_" + miTotalFrames);
 		
 		ObjectOutputStream out;
 		
@@ -79,7 +81,7 @@ public class Recorder implements RecorderDataUpdater {
 			new Handler(Looper.getMainLooper()).post(new Runnable() {	
 				@Override
 				public void run() {
-					Toast.makeText(context, "File Saved!", Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "File Saved! [" + miTotalFrames + " frames]", Toast.LENGTH_LONG).show();
 				}
 			});
 			

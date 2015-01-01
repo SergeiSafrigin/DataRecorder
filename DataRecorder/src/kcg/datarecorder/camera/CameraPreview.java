@@ -83,7 +83,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		double d2 = 2D * Math.atan(d * Math.tan(d1 / 2D));
 		double d3 = 2D * Math.atan((100D * Math.tan(d1 / 2D)) / (double) i);
 		double d4 = 2D * Math.atan((100D * Math.tan(d2 / 2D)) / (double) i);
-		if (config.getDevice() == kcg.datarecorder.main.Config.Device.PHONE) {
+		if (config.getDevice() == Config.DeviceType.PHONE) {
 			config.sethAngle(Math.toDegrees(d4));
 			config.setvAngle(Math.toDegrees(d3));
 			return;
