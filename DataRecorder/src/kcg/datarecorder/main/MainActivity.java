@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
 	
 	private final int TIME_1_SECOND = 1000;//1000 millis
 	
-	//private CameraController cameraController;
 	private NewCameraController mNewCameraController;
 	private Config config;
 	private LocationController locationController;
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
 	private RecorderController recorderController;
 	private boolean running;
 	private SensorsController sensorsController;
-	private WifiScanner wifiScanner;
+	private WifiScanner mWifiScanner;
 	private Button startButton;
 	private Button stopButton;
 	private TextView mInfo;
@@ -71,14 +70,12 @@ public class MainActivity extends Activity {
 		
     	mTimerHandler = new Handler();
 
-		mNewCameraController = new NewCameraController(context, config);		
-		//cameraController = new CameraController(context, config);
-		
+		mNewCameraController = new NewCameraController(context, config);
 		sensorsController = new SensorsController(context, config);
 		locationController = new LocationController(context, config);
-		wifiScanner = new WifiScanner(context, config);
-		//recorderController = new RecorderController(context, config, R.raw.recorded, cameraController, sensorsController, locationController);
-		recorderController = new RecorderController(context, config, R.raw.recorded, mNewCameraController, sensorsController, locationController, wifiScanner);
+		mWifiScanner = new WifiScanner(context, config);
+
+		recorderController = new RecorderController(context, config, R.raw.recorded, mNewCameraController, sensorsController, locationController, mWifiScanner);
 		
 		startButton = (Button)(this.findViewById(R.id.startButton));
 		stopButton = (Button)(this.findViewById(R.id.stopButton));
@@ -127,11 +124,11 @@ public class MainActivity extends Activity {
 
 		switch (device) {
 		case "phone":
-			config.setDevice(Config.DeviceType.PHONE);
+			config.setDeviceType(Config.DeviceType.PHONE);
 			break;
 
 		case "glasses":
-			config.setDevice(Config.DeviceType.GLASSES);
+			config.setDeviceType(Config.DeviceType.GLASSES);
 			break;
 		}
 

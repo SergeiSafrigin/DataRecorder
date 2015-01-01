@@ -1,6 +1,10 @@
 package kcg.datarecorder.recorder;
 
-public class WifiData {
+import java.io.Serializable;
+
+public class WifiData implements Serializable {
+	private static final long serialVersionUID = -3532334535234824913L;
+	
 	private String macAddress; //string representation of the access point's address;
 	private String capabilities; //Describes the authentication, key management, and encryption schemes supported by the access point.
 	private int frequency; //The frequency in MHz of the channel over which the client is communicating with the access point.

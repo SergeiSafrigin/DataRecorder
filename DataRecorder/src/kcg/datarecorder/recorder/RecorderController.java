@@ -12,49 +12,39 @@ import kcg.datarecorder.sensors.WifiScanner;
 public class RecorderController implements OnFrameTrigger {
 	//private CameraController cameraController;
 	private NewCameraController mNewCameraController;
-	private LocationController locationController;
-	private WifiScanner wifiScanner;
-	private Recorder recorder;
-	private boolean recording;
-	private SensorsController sensorsController;
-
-	/*public RecorderController(Context context, Config config, int finishSoundResource,
-			CameraController cameracontroller,
-			SensorsController sensorscontroller,
-			LocationController locationcontroller) {
-		
-		cameraController = cameracontroller;
-		sensorsController = sensorscontroller;
-		locationController = locationcontroller;
-		cameracontroller.registerOnFrameListener(this);
-		recorder = new Recorder(context, config, finishSoundResource);
-	}*/
+	private LocationController mLocationController;
+	private WifiScanner mWifiScanner;
+	private Recorder mRecorder;
+	private boolean mIsRecording;
+	private SensorsController mSensorsController;
 
 	public RecorderController(Context context, Config config, int finishSoundResource,
-			NewCameraController newCameracontroller,
+			NewCameraController newCameraController,
 			SensorsController sensorsController,
 			LocationController locationController,
 			WifiScanner wifiScanner) {
 
-		this.cameraController = cameraController;
-		this.sensorsController = sensorsController;
-		this.locationController = locationController;
-		this.wifiScanner = wifiScanner;
+		mIsRecording = false;
+		
+		mNewCameraController = newCameraController;
+		mSensorsController = sensorsController;
+		mLocationController = locationController;
+		mWifiScanner = wifiScanner;
 		
 		mNewCameraController.registerOnFrameListener(this);
-		recorder = new Recorder(context, config, finishSoundResource);
+		mRecorder = new Recorder(context, config, finishSoundResource);
 	}
 
 	public void onFrame() {
-		if (recording) {
-			recorder.addData(mNewCameraController.getLastFrameTime(),
+		if (mIsRecording) {
+			mRecorder.addData(mNewCameraController.getLastFrameTime(),
 					mNewCameraController.getLastFrame(),
-					locationController.getLastLocation(),
-					wifiScanner.getWifiDataList(),
-					sensorsController.getYaw(),
-					sensorsController.getPitch(),
-					sensorsController.getRoll(),
-					sensorsController.getPressure());
+					mLocationController.getLastLocation(),
+					mWifiScanner.getLastResults(),
+					mSensorsController.getYaw(),
+					mSensorsController.getPitch(),
+					mSensorsController.getRoll(),
+					mSensorsController.getPressure());
 		}
 	}
 
@@ -63,27 +53,26 @@ public class RecorderController implements OnFrameTrigger {
 	}
 
 	public void startRecording() {
-		if (!recording) {
-			recording = true;
-			//cameraController.registerOnFrameListener(this);
+		if (!mIsRecording) {
+			mIsRecording = true;
 			mNewCameraController.registerOnFrameListener(this);
-			sensorsController.startSensorScanner();
-			locationController.startGPS();
-			wifiScanner.startWifiListener();
-			recorder.start();
+			mSensorsController.startSensorScanner();
+			mLocationController.startGPS();
+			mWifiScanner.startWifiListener();
+			mWifiScanner.startContinuousScan();
+			mRecorder.start();
 		}
 	}
 
 	public void stopRecording() {
-		if (recording) {
-			recording = false;
-			//cameraController.unregisterOnFrameListener();
+		if (mIsRecording) {
+			mIsRecording = false;
 			mNewCameraController.unregisterOnFrameListener();
 			int totalFrames = mNewCameraController.getFrameCounter();
-			sensorsController.stopSensorScanner();
-			locationController.stopGPS();
-			wifiScanner.stopWifiListener();
-			recorder.stop(totalFrames);
+			mSensorsController.stopSensorScanner();
+			mLocationController.stopGPS();
+			mWifiScanner.stopWifiListener();
+			mRecorder.stop(totalFrames);
 		}
 	}
 }

@@ -14,58 +14,111 @@ import android.net.wifi.WifiManager;
 
 public class WifiScanner {
 
-	private WifiManager wifi;
-	private Config config;
-	private Context context;
-	private ArrayList<WifiData> wifiDataList;
+	private Object mLock;
+	private Config mConfig;
+	private Context mContext;
+	private boolean mbContinuousScan;
+	private boolean mbNewResults;
+	private WifiManager mWifiManager;
+	private List<ScanResult> mLastScanResults;
 
 	public WifiScanner(Context context, Config config) {
-		this.context = context;
-		this.config = config;
+		mContext = context;
+		mConfig = config;
 		
-		wifiDataList = new ArrayList<WifiData>();
+		mLock = new Object();
+		mbContinuousScan = false;
+		mbNewResults = false;
+
+		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 	}
 
 	private BroadcastReceiver wifiBroadCastReceiver = new BroadcastReceiver() {
 		public void onReceive(Context c, Intent i) {
-			wifiDataList.clear();
-			List<ScanResult> signals = wifi.getScanResults();
+
+			List<ScanResult> results = mWifiManager.getScanResults();
 			
-			for (ScanResult signal : signals) {
-				wifiDataList.add(new WifiData(signal.BSSID, signal.capabilities, signal.frequency, signal.level, signal.SSID));
+			synchronized(mLock) {
+				mbNewResults = true;
+				mLastScanResults = results;
 			}
 
-			if (config.isContinueosScaning())
-				wifi.startScan();
+			if(mbContinuousScan) {
+				mWifiManager.startScan();
+			}
 		}
 	};
 
-	public void startWifiLestener() {
-		wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-		if (wifi.isWifiEnabled() == false) {
-			wifi.setWifiEnabled(true);
+	public void startWifiListener() {
+		//mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+		if (mWifiManager.isWifiEnabled() == false) {
+			mWifiManager.setWifiEnabled(true);
+
+			//TODO - maybe need to add timer just in case
+			while (!mWifiManager.isWifiEnabled())
+				;
 		}
-
-		while (!wifi.isWifiEnabled());
-
-		scan();
 
 		IntentFilter i = new IntentFilter();
 		i.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-		context.registerReceiver(wifiBroadCastReceiver, i);
-
+		mContext.registerReceiver(wifiBroadCastReceiver, i);
 	}
 
 	public void stopWifiListener() {
-		context.unregisterReceiver(wifiBroadCastReceiver);
+		mContext.unregisterReceiver(wifiBroadCastReceiver);
+		synchronized(mLock) {
+			mbContinuousScan = false;
+			mbNewResults = false;
+			mLastScanResults.clear();
+		}
 	}
 
-	public void scan() {
-		wifi.startScan();
+	private void internalStartScan() {
+
+		//TODO - need to add watchdog timer here!!!
+		synchronized(mLock) {
+			mbNewResults = false;
+		}
+		mWifiManager.startScan();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ArrayList<WifiData> getWifiDataList() {
-		return (ArrayList<WifiData>)wifiDataList.clone();
+	public void startContinuousScan() {
+		mbContinuousScan = true;
+		internalStartScan();
+	}
+	
+	public void startSingleScan() {
+		internalStartScan();
+	}
+
+	/*public void scan() {
+		mWifiManager.startScan();
+	}*/
+	
+	public boolean newResultsExists() {
+		synchronized(mLock) {	
+			return mbNewResults;
+		}
+	}
+	
+	public ArrayList<WifiData> getLastResults() {
+		List<ScanResult> scanResults;
+		//ArrayList<WifiData> wifiResults = new ArrayList<WifiData>();
+		
+		synchronized(mLock) {
+			if(!mbNewResults) {
+				//return wifiResults;
+				return null;
+			}		
+			scanResults = mLastScanResults;
+			mbNewResults = false;
+		}
+		
+		ArrayList<WifiData> wifiResults = new ArrayList<WifiData>();
+		for (ScanResult signal : scanResults) {
+			wifiResults.add(new WifiData(signal.BSSID, signal.capabilities, signal.frequency, signal.level, signal.SSID));
+		}
+		
+		return new ArrayList<WifiData>(wifiResults);
 	}
 }

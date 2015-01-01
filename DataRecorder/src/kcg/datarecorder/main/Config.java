@@ -13,12 +13,12 @@ public class Config implements Serializable {
 
 	private CameraType mCameraType;
 	private int cameraId;
-	private DeviceType device;
+	private DeviceType mDeviceType;
 	private double hAngle;
 	private int previewHeight = 320;
 	private int previewWidth = 240;
 	private double vAngle;
-	private boolean continueosScaning;
+	private boolean mIsContinuousScaning;
 	
 	public static List<Size> SCREEN_SIZES;
 
@@ -38,12 +38,12 @@ public class Config implements Serializable {
 		this.cameraId = cameraId;
 	}
 
-	public DeviceType getDevice() {
-		return device;
+	public DeviceType getDeviceType() {
+		return mDeviceType;
 	}
 
-	public void setDevice(DeviceType device) {
-		this.device = device;
+	public void setDeviceType(DeviceType deviceType) {
+		mDeviceType = deviceType;
 	}
 
 	public double gethAngle() {
@@ -79,10 +79,10 @@ public class Config implements Serializable {
 	}
 
 	public boolean isContinueosScaning() {
-		return continueosScaning;
+		return mIsContinuousScaning;
 	}
 
 	public void setContinueosScaning(boolean continueosScaning) {
-		this.continueosScaning = continueosScaning;
+		mIsContinuousScaning = continueosScaning;
 	}
 }
