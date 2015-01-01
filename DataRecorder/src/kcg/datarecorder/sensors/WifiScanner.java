@@ -19,6 +19,7 @@ public class WifiScanner {
 	private Context mContext;
 	private boolean mbContinuousScan;
 	private boolean mbNewResults;
+	private int miNumScansCounter;
 	private WifiManager mWifiManager;
 	private List<ScanResult> mLastScanResults;
 
@@ -29,6 +30,7 @@ public class WifiScanner {
 		mLock = new Object();
 		mbContinuousScan = false;
 		mbNewResults = false;
+		miNumScansCounter = 0;
 
 		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 	}
@@ -42,6 +44,7 @@ public class WifiScanner {
 				mbNewResults = true;
 				mLastScanResults = results;
 			}
+			miNumScansCounter++;
 
 			if(mbContinuousScan) {
 				mWifiManager.startScan();
@@ -120,5 +123,9 @@ public class WifiScanner {
 		}
 		
 		return new ArrayList<WifiData>(wifiResults);
+	}
+	
+	public int getNumScans() {
+		return miNumScansCounter;
 	}
 }

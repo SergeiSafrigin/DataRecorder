@@ -186,7 +186,8 @@ public class MainActivity extends Activity {
         		public void run() {
         			int frames = mNewCameraController.getFrameCounter();
         			int fps = mNewCameraController.getFPS();
-        			mInfo.setText("FPS=" + fps + " [" + frames + "]");
+        			int wifiScans = mWifiScanner.getNumScans();
+        			mInfo.setText("FPS=" + fps + " [" + frames + "]" + " w=" + wifiScans);
         		}
         	});
         }
