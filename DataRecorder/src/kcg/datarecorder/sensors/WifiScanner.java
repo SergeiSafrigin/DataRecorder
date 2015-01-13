@@ -43,8 +43,8 @@ public class WifiScanner {
 			synchronized(mLock) {
 				mbNewResults = true;
 				mLastScanResults = results;
+				miNumScansCounter++;
 			}
-			miNumScansCounter++;
 
 			if(mbContinuousScan) {
 				mWifiManager.startScan();
@@ -72,6 +72,7 @@ public class WifiScanner {
 		synchronized(mLock) {
 			mbContinuousScan = false;
 			mbNewResults = false;
+			miNumScansCounter = 0;
 			mLastScanResults.clear();
 		}
 	}
